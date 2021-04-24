@@ -19,7 +19,7 @@ CYAN = (0, 255, 255)
 GREY = (220,220,220)
 
 
-# All the nodes on the screen
+# Class container for a single node on the grid
 class Space:
     def __init__(self, row, column, width, total_rows):
         self.row = row
@@ -73,6 +73,8 @@ class Space:
     def draw(self, win):
         pygame.draw.rect(win, self.color, (self.x, self.y, self.width, self.width))
 
+    # keeps track of the neighboring nodes
+    # in the up, down, left, right direction
     def update_neighbors(self, grid):
         self.neighbors = []
         if self.row < self.total_rows-1 and not grid[self.row+1][self.column].is_wall(): # down
@@ -90,17 +92,23 @@ class Space:
     def __lt__(self, other):
         return False
 
+# Heuristic function returning absolute distance for estimate
 def h(node1, node2):
     x1, y1 = node1
     x2, y2 = node2
     return abs(x1 - x2) + abs(y1 - y2)
 
+# Backtracks on the shortest available path
+# and draws it at the end of traversal
 def reconstruct_path(previous_node, current, draw):
     while current in previous_node:
         current = previous_node[current]
         current.make_path()
         draw()
 
+# A* algorithm implementation
+# that evaluates the heuristic cost and exact cost to each node.
+# Uses a Priority Queue to keep track of nodes
 def a_star_algorithm(draw, grid, start, finish):
     count = 0
     open_set = PriorityQueue()
@@ -144,6 +152,7 @@ def a_star_algorithm(draw, grid, start, finish):
             current.make_closed()
     return False
 
+# Defining a 2D array for the grid
 def make_grid(rows, width):
     grid = []
     gap = width // rows
@@ -154,6 +163,7 @@ def make_grid(rows, width):
             grid[i].append(space)
     return grid
 
+# Drawing the 2D grid array in Pygame
 def draw_grid(win, rows, width):
     gap = width // rows
     for i in range(rows):
@@ -161,6 +171,7 @@ def draw_grid(win, rows, width):
     for j in range(rows):
         pygame.draw.line(win, GREY, (j*gap, 0), (j*gap, width))
 
+# Drawing each node or "space" in the Pygame
 def draw(win, grid, rows, width):
     win.fill(WHITE)
 
@@ -171,6 +182,7 @@ def draw(win, grid, rows, width):
     draw_grid(win, rows, width)
     pygame.display.update()
 
+# Captures the coordinate of wherever the mouse pointer was clicked
 def get_mouse_click_position(pos, rows, width):
     gap = width // rows
     y, x = pos
@@ -179,6 +191,7 @@ def get_mouse_click_position(pos, rows, width):
     column = x // gap
     return row, column
 
+# Main program logic
 def main(win, width):
     ROWS = 50
     grid = make_grid(ROWS, width)
@@ -226,4 +239,5 @@ def main(win, width):
 
     pygame.quit()
 
+# Run
 main(WINDOW, WINDOWRES)
