@@ -19,7 +19,7 @@ CYAN = (0, 255, 255)
 GREY = (220,220,220)
 
 
-# Class container for a single node on the grid
+# Class container for a single node or "Space" on the grid
 class Space:
     def __init__(self, row, column, width, total_rows):
         self.row = row
@@ -31,42 +31,50 @@ class Space:
         self.color = WHITE
         self.neighbors = []
 
+    # Return the space position on the 2d grid array
     def get_pos(self):
         return self.row, self.column
 
+    # Visited spaces
     def is_closed(self):
         return self.color == RED
-
-    def is_open(self):
-        return self.color == YELLOW
-
-    def is_wall(self):
-        return self.color == BLACK
-
-    def is_start(self):
-        return self.color == PINK
-
-    def is_finish(self):
-        return self.color == CYAN
-
-    def reset(self):
-        self.color = WHITE
-
-    def make_open(self):
-        self.color = YELLOW
 
     def make_closed(self):
         self.color = RED
 
+    # Unvisited spaces
+    def is_open(self):
+        return self.color == YELLOW
+
+    def make_open(self):
+        self.color = YELLOW
+
+    # Wall spaces
+    def is_wall(self):
+        return self.color == BLACK
+
     def make_wall(self):
         self.color = BLACK
+
+    # Starting space
+    def is_start(self):
+        return self.color == PINK
 
     def make_start(self):
         self.color = PINK
 
+    # Ending space
+    def is_finish(self):
+        return self.color == CYAN
+
     def make_finish(self):
         self.color = CYAN
 
+    # Reset space color
+    def reset(self):
+        self.color = WHITE
+
+    # Path nodes
     def make_path(self):
         self.color = GREEN
 
